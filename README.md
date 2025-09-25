@@ -7,8 +7,11 @@ Uma aplicação moderna de gerenciamento de notas construída com React, TypeScr
 - ✅ Criar, editar e deletar notas
 - 🔍 Busca por título, conteúdo ou tags
 - ⭐ Sistema de favoritos
-- 🏷️ Sistema de tags
+- 🏷️ Sistema de tags com cores personalizadas
+- 📁 Sistema de projetos organizacionais
+- ✏️ Editor de texto rico (Rich Text Editor)
 - 💾 Armazenamento local (localStorage)
+- 🌙 Modo escuro/claro
 - 📱 Design responsivo
 - 🎨 Interface moderna e intuitiva
 
@@ -17,6 +20,7 @@ Uma aplicação moderna de gerenciamento de notas construída com React, TypeScr
 - **React 18** - Biblioteca para interfaces de usuário
 - **TypeScript** - Superset tipado do JavaScript
 - **Vite** - Build tool e dev server
+- **React Quill** - Editor de texto rico
 - **Lucide React** - Ícones modernos
 - **CSS3** - Estilização com variáveis CSS
 
@@ -46,6 +50,7 @@ npm run dev
 - `npm run build` - Cria build de produção
 - `npm run preview` - Visualiza o build de produção
 - `npm run lint` - Executa o linter ESLint
+- `npm run deploy` - Build e preview da aplicação
 
 ## 📁 Estrutura do Projeto
 
@@ -81,6 +86,63 @@ notes-mentor/
 4. **Marcar como favorito**: Clique na estrela em qualquer nota
 5. **Buscar notas**: Use a barra de busca para encontrar notas por título, conteúdo ou tags
 6. **Filtrar favoritos**: Use o botão "Favoritos" para mostrar apenas notas favoritas
+
+## 🚀 Deploy
+
+### Opções de Deploy
+
+#### 1. **Vercel** (Recomendado)
+```bash
+# Instalar Vercel CLI
+npm i -g vercel
+
+# Deploy
+vercel
+
+# Deploy de produção
+vercel --prod
+```
+
+#### 2. **Netlify**
+```bash
+# Build local
+npm run build
+
+# Arrastar pasta 'dist' para netlify.com/drop
+# Ou conectar repositório GitHub no Netlify
+```
+
+#### 3. **GitHub Pages**
+```bash
+# Instalar gh-pages
+npm install --save-dev gh-pages
+
+# Adicionar script no package.json
+"deploy": "gh-pages -d dist"
+
+# Deploy
+npm run deploy
+```
+
+#### 4. **Firebase Hosting**
+```bash
+# Instalar Firebase CLI
+npm install -g firebase-tools
+
+# Login e inicializar
+firebase login
+firebase init hosting
+
+# Deploy
+firebase deploy
+```
+
+### Configurações Incluídas
+
+- ✅ `vercel.json` - Configuração para Vercel
+- ✅ `netlify.toml` - Configuração para Netlify
+- ✅ Build otimizado para produção
+- ✅ SPA routing configurado
 
 ## 💾 Armazenamento
 

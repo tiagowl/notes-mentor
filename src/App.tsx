@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, BookOpen, Menu, Search, Star, Archive, Tag, Settings, Sun, Moon, Folder } from 'lucide-react';
+import { Plus, BookOpen, Menu, Star, Archive, Tag, Sun, Moon, Folder } from 'lucide-react';
 import { useNotes } from './hooks/useNotes';
 import { useTags } from './hooks/useTags';
 import { useProjects } from './hooks/useProjects';
@@ -24,7 +24,6 @@ function App() {
     searchNotes,
     getFavoriteNotes,
     getArchivedNotes,
-    getActiveNotes,
     toggleFavorite,
     toggleArchive,
   } = useNotes();

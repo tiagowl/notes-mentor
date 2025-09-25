@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Star, Archive, Tag } from 'lucide-react';
+import { Search, Star } from 'lucide-react';
 
 interface SearchBarProps {
   searchTerm: string;
