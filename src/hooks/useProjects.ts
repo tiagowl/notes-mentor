@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Project, CreateProjectData, UpdateProjectData } from '../types/Project';
+import { useLocalStorage } from './useLocalStorage';
 
 const STORAGE_KEY = 'notes-mentor-projects';
 
@@ -24,32 +25,30 @@ export const PROJECT_COLORS = [
 ];
 
 export const useProjects = () => {
+  const [storedProjects, setStoredProjects] = useLocalStorage<Project[]>(STORAGE_KEY, []);
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Carregar projetos do localStorage
   useEffect(() => {
     try {
-      const savedProjects = localStorage.getItem(STORAGE_KEY);
-      if (savedProjects) {
-        const parsedProjects = JSON.parse(savedProjects).map((project: any) => ({
-          ...project,
-          createdAt: new Date(project.createdAt),
-          updatedAt: new Date(project.updatedAt),
-        }));
-        setProjects(parsedProjects);
-      }
+      const parsedProjects = storedProjects.map((project: any) => ({
+        ...project,
+        createdAt: new Date(project.createdAt),
+        updatedAt: new Date(project.updatedAt),
+      }));
+      setProjects(parsedProjects);
     } catch (error) {
       console.error('Erro ao carregar projetos:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [storedProjects]);
 
   // Salvar projetos no localStorage
   const saveProjects = (newProjects: Project[]) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newProjects));
+      setStoredProjects(newProjects);
       setProjects(newProjects);
     } catch (error) {
       console.error('Erro ao salvar projetos:', error);

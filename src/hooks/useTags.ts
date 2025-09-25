@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Tag, CreateTagData, UpdateTagData } from '../types/Tag';
+import { useLocalStorage } from './useLocalStorage';
 
 const STORAGE_KEY = 'notes-mentor-tags';
 
@@ -20,32 +21,30 @@ export const TAG_COLORS = [
 ];
 
 export const useTags = () => {
+  const [storedTags, setStoredTags] = useLocalStorage<Tag[]>(STORAGE_KEY, []);
   const [tags, setTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Carregar tags do localStorage
   useEffect(() => {
     try {
-      const savedTags = localStorage.getItem(STORAGE_KEY);
-      if (savedTags) {
-        const parsedTags = JSON.parse(savedTags).map((tag: any) => ({
-          ...tag,
-          createdAt: new Date(tag.createdAt),
-          updatedAt: new Date(tag.updatedAt),
-        }));
-        setTags(parsedTags);
-      }
+      const parsedTags = storedTags.map((tag: any) => ({
+        ...tag,
+        createdAt: new Date(tag.createdAt),
+        updatedAt: new Date(tag.updatedAt),
+      }));
+      setTags(parsedTags);
     } catch (error) {
       console.error('Erro ao carregar tags:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [storedTags]);
 
   // Salvar tags no localStorage
   const saveTags = (newTags: Tag[]) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newTags));
+      setStoredTags(newTags);
       setTags(newTags);
     } catch (error) {
       console.error('Erro ao salvar tags:', error);

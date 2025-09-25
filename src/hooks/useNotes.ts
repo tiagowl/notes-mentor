@@ -1,35 +1,34 @@
 import { useState, useEffect } from 'react';
 import { Note, CreateNoteData, UpdateNoteData } from '../types/Note';
+import { useLocalStorage } from './useLocalStorage';
 
 const STORAGE_KEY = 'notes-mentor-notes';
 
 export const useNotes = () => {
+  const [storedNotes, setStoredNotes] = useLocalStorage<Note[]>(STORAGE_KEY, []);
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Carregar notas do localStorage
   useEffect(() => {
     try {
-      const savedNotes = localStorage.getItem(STORAGE_KEY);
-      if (savedNotes) {
-        const parsedNotes = JSON.parse(savedNotes).map((note: any) => ({
-          ...note,
-          createdAt: new Date(note.createdAt),
-          updatedAt: new Date(note.updatedAt),
-        }));
-        setNotes(parsedNotes);
-      }
+      const parsedNotes = storedNotes.map((note: any) => ({
+        ...note,
+        createdAt: new Date(note.createdAt),
+        updatedAt: new Date(note.updatedAt),
+      }));
+      setNotes(parsedNotes);
     } catch (error) {
       console.error('Erro ao carregar notas:', error);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [storedNotes]);
 
   // Salvar notas no localStorage
   const saveNotes = (newNotes: Note[]) => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newNotes));
+      setStoredNotes(newNotes);
       setNotes(newNotes);
     } catch (error) {
       console.error('Erro ao salvar notas:', error);
