@@ -1,6 +1,4 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 
 interface RichTextEditorProps {
   value: string;
@@ -16,10 +14,28 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   height = 200,
 }) => {
   const [isQuillLoaded, setIsQuillLoaded] = useState(false);
+  const [ReactQuill, setReactQuill] = useState<any>(null);
 
   useEffect(() => {
-    // Verificar se o ReactQuill está disponível
-    setIsQuillLoaded(true);
+    // Carregar ReactQuill dinamicamente
+    const loadQuill = async () => {
+      try {
+        const { default: Quill } = await import('react-quill');
+        // Carregar CSS dinamicamente
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'https://cdn.quilljs.com/1.3.6/quill.snow.css';
+        document.head.appendChild(link);
+        
+        setReactQuill(() => Quill);
+        setIsQuillLoaded(true);
+      } catch (error) {
+        console.warn('ReactQuill não pôde ser carregado, usando fallback:', error);
+        setIsQuillLoaded(false);
+      }
+    };
+
+    loadQuill();
   }, []);
 
   const modules = useMemo(() => ({
@@ -42,7 +58,7 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
   ];
 
   // Fallback para textarea simples se o ReactQuill não carregar
-  if (!isQuillLoaded) {
+  if (!isQuillLoaded || !ReactQuill) {
     return (
       <div className="rich-text-editor">
         <textarea
@@ -57,7 +73,9 @@ export const RichTextEditor: React.FC<RichTextEditorProps> = ({
             borderRadius: 'var(--radius-md)',
             fontFamily: 'var(--font-sans)',
             fontSize: '14px',
-            resize: 'vertical'
+            resize: 'vertical',
+            backgroundColor: 'var(--bg-primary)',
+            color: 'var(--text-primary)'
           }}
         />
       </div>

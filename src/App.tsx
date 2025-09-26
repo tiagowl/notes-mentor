@@ -9,6 +9,7 @@ import { SearchBar } from './components/SearchBar';
 import { TagManager } from './components/TagManager';
 import { ProjectManager } from './components/ProjectManager';
 import { Note, CreateNoteData } from './types/Note';
+import { checkForErrors, debugLog } from './utils/productionCheck';
 import './App.css';
 
 type ViewMode = 'all' | 'favorites' | 'archived';
@@ -47,6 +48,12 @@ function App() {
 
   // Load theme preferences from localStorage
   useEffect(() => {
+    // Verificar erros de JavaScript
+    checkForErrors();
+    
+    // Debug log para produção
+    debugLog('App inicializado');
+    
     const savedTheme = localStorage.getItem('theme') as Theme;
     
     if (savedTheme) setTheme(savedTheme);

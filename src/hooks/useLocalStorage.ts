@@ -1,20 +1,21 @@
 import { useState, useEffect } from 'react';
+import { isBrowser, isLocalStorageAvailable, createMemoryStorage } from '../utils/productionCheck';
 
 export const useLocalStorage = <T>(key: string, initialValue: T) => {
-  // Função para verificar se estamos no browser
-  const isBrowser = typeof window !== 'undefined';
+  // Verificar se localStorage está disponível, senão usar storage em memória
+  const storage = isLocalStorageAvailable() ? localStorage : createMemoryStorage();
 
-  // Função para obter valor do localStorage
+  // Função para obter valor do storage
   const getStoredValue = (): T => {
-    if (!isBrowser) {
+    if (!isBrowser()) {
       return initialValue;
     }
 
     try {
-      const item = localStorage.getItem(key);
+      const item = storage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error(`Erro ao ler localStorage key "${key}":`, error);
+      console.error(`Erro ao ler storage key "${key}":`, error);
       return initialValue;
     }
   };
@@ -29,17 +30,17 @@ export const useLocalStorage = <T>(key: string, initialValue: T) => {
       
       setStoredValue(valueToStore);
       
-      if (isBrowser) {
-        localStorage.setItem(key, JSON.stringify(valueToStore));
+      if (isBrowser()) {
+        storage.setItem(key, JSON.stringify(valueToStore));
       }
     } catch (error) {
-      console.error(`Erro ao salvar no localStorage key "${key}":`, error);
+      console.error(`Erro ao salvar no storage key "${key}":`, error);
     }
   };
 
-  // Sincronizar com mudanças do localStorage (de outras abas)
+  // Sincronizar com mudanças do storage (de outras abas)
   useEffect(() => {
-    if (!isBrowser) return;
+    if (!isBrowser()) return;
 
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === key && e.newValue !== null) {
